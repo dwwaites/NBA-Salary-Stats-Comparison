@@ -1,0 +1,125 @@
+---
+title: "Does Perfomance Pay? Basketball Salaries Analysis"
+subtitle: "STAT 330 Portfolio Project Proposal"
+author: Drake Waites, Michael David Lawter, Brayden Canning
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+    code-summary: "Show code"
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+---
+
+## Question and audience
+
+This project will investigate the question: How well can NBA players' regular-season performance statistics predict their annual salaries from 2010 through 2025? The intended audience includes basketball fans, sports analysts, NBA salary analyists, NBA players, and NBA front-office staff who are interested in how much player performance relates to compensation. These relationships are important because they could help explain which statistics are associated with higher salaries and how accurately salary can be predicted from performance data.
+
+The response variable is annual salary (Salary). Important candidate predictors include points per game (PTS), assists (AST), rebounds (TRB), minutes played per game (MP), age (Age), games played (G), steals (STL), and blocks (BLK). Season (Year) will also be considered because salary levels and league conditions change over time.
+
+
+
+## Data
+
+The data come from the public GitHub repository NBA Salary Prediction, which includes the file NBA Player Stats and Salaries_2010-2025.csv. The dataset contains 7,298 rows and 31 variables from 2010–2025. The observational unit is a player-season-team record. The response is annual salary in dollars, and the candidate predictors are regular-season statistics, player age, and season
+
+The repository describes combining and cleaning player statistics and salary information from sources that include Basketball Reference and other Basketball databases. The data contain public professional sports information and does not appear to require or show private personal information. Potential limitations not in the dataset include  factors such as contract length, injuries, experience, position, foul history, team finances, and contract timing. Also, players who changed teams within a season may also have more than one row, so the unit of observation and any duplicate player-season records will need to be considered during data cleaning.
+
+**Provide a working source link or citation. Describe the observational unit, dimensions, response, candidate predictors, collection process if known, and evidence that the data can answer your question. Address permission to share or retrieve the data and any privacy, representation, measurement, or ethical concern.**
+
+```{r}
+# Load packages and read the data with a relative path or reproducible step.
+# Show only a compact check of dimensions and variables.
+
+library(tidyverse)
+
+nba <- read_csv("NBA Player Stats and Salaries_2010-2025.csv")
+
+tibble(
+  observations = nrow(nba),
+  variables = ncol(nba),
+  unique_players = n_distinct(nba$Player),
+  seasons = n_distinct(nba$Year),
+  missing_salary = sum(is.na(nba$Salary)),
+  missing_points = sum(is.na(nba$PTS))
+)
+
+names(nba)
+
+```
+
+## One useful first look
+
+```{r}
+# Create one figure that directly informs your research question.
+# Include a useful title, labels, units, and accessible colors.
+```
+ggplot(nba, aes(x = PTS, y = Salary)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "loess", se = TRUE) +
+  scale_y_log10(labels = scales::label_dollar()) +
+  labs(
+    title = "NBA Player Salary and Points per Game, 2010–2025",
+    x = "Points per game",
+    y = "Annual salary (logarithmic scale)"
+  ) +
+  theme_minimal()
+```
+
+
+```
+
+**In two to four sentences, explain the most important pattern. Do not make a causal claim unless the study design supports one.**
+
+## Baseline model
+
+**Name and justify one simple starting model.**
+A reasonable starting model is a multiple linear regression of log salary on points per game and season:
+
+[
+\log(\text{Salary}) = \beta_0 + \beta_1(\text{PTS}) + \text{season effects} + \varepsilon.
+]
+
+The logarithmic transformation is appropriate as a starting point because salaries are strongly right-skewed. Including season effects helps account for differences in salary levels across years, while points per game provides a simple measure of offensive performance.
+
+
+```{r}
+# Fit the baseline and display only the output needed below.
+baseline_model <- lm(log(Salary) ~ PTS + factor(Year), data = nba)
+
+pts_estimate <- coef(baseline_model)["PTS"]
+pts_interval <- confint(baseline_model)["PTS", ]
+
+tibble(
+  term = "Points per game",
+  estimated_percent_difference = 100 * (exp(pts_estimate) - 1),
+  lower_95_percent = 100 * (exp(pts_interval[1]) - 1),
+  upper_95_percent = 100 * (exp(pts_interval[2]) - 1)
+)
+```
+
+**Interpret one important coefficient, contrast, or prediction in context. Include direction, magnitude, units or scale, and uncertainty. Then identify one specific limitation, unexplained pattern, or opportunity for improvement.**
+In the baseline model fitted to the supplied dataset, one additional point per game is associated with approximately 15% higher annual salary, holding season constant. The estimated 95% confidence interval is approximately 14.5% to 15.5%. This describes an average association in the fitted model, not a guaranteed salary increase for an individual player. One limitation is that points per game alone cannot capture other important factors, such as assists, rebounds, defensive contributions, injuries, or contract terms. The model's assumptions and predictive performance will need further evaluation.
+
+## Where the analysis could go
+
+**Choose two different course-method families from the project instructions. For each, state what you might do and how it could help answer the question. These methods will form the core of the project and may change after feedback.**
+
+1. **Possible direction:** Replace.
+2. **Possible direction:** Replace.
+Model selection: Compare models with different combinations of performance statistics. Criteria such as AIC and BIC could help evaluate whether adding predictors improves the model enough to justify the added complexity.
+
+Prediction and model evaluation: Compare predictive performance using a validation set or cross-validation and a metric such as RMSE. This would help determine whether a model with more predictors predicts salary more accurately than the baseline model.
+
+These are preliminary directions and may be adjusted after feedback to ensure they match the approved course-method families.
+## AI disclosure and sources
+
+**Disclose any AI used for debugging, proofreading, or other help with the proposal. This does not satisfy the required AI extension. Write “No AI used” if applicable. Cite the dataset and any other sources that materially informed the proposal.**
+ChatGPT was used to help organize and draft this proposal, suggest R code for exploratory analysis and regression, and explain the interpretation of regression coefficients. The code and results will be checked in Positron before submission. This disclosure describes assistance with the proposal and does not claim to fulfill the separate required AI extension.
+
+Dataset source: Jeon, E. (n.d.). NBA Salary Prediction. GitHub. https://github.com/edwinjeon/NBA-Salary-Prediction
+
+Underlying data sources: The repository identifies Basketball Reference among its references. The specific original sources and applicable reuse terms should be verified before the final project is submitted.
