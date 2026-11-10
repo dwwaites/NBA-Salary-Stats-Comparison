@@ -52,6 +52,12 @@ This template suggests one way to tell the story. You may rename, combine, or re
 
 **Explain the need revealed by your preliminary course-based work, the extension you implemented with AI support, and what it contributes to the same research question. Show its substantive result on this page and summarize your independent checks. If the extension is an untaught comparator, evaluate it against the core course-based model. Link to the AI-use record instead of placing a transcript here.**
 
+We plan to use AI to help implement a random forest regression model to predict players salaries. Random forests are capable of predicting nonlinear relationships between predictors without having to specify those relationships in the model. 
+
+We will compare the random forest model against our best course-based linear regression model. In this way, we can investigate if a nonlinear model approach improves out of sample prediction. 
+
+
+
 ```{r}
 # Implement the verified extension or show its most useful result.
 ```

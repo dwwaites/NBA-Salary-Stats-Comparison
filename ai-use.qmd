@@ -8,21 +8,48 @@ This page is a work log, not a second report. Short bullets are welcome. It is s
 
 ## Starting point
 
-**AI system and date:** Replace.
+ChatGPT 11/10/2026
 
 **Before using AI for the required extension, briefly state your question, course-based core model, baseline result, and the specific limitation or opportunity you wanted to address.**
+The question this analysis seeks to answer is: How well can NBA players' regular-season performance statistics predict their annual salaries from 2010 through 2025? The response variable is log(Salary), and the possible predictors include: points per game, assists, rebounds, age, games played, steals, blocks, and season fixed effects. 
+
+The baseline model is an OLS regression of log(Salary) on points and season fixed effects. According to this model, one additional point per game is associated with an approximately 15% higher salary. 
+
+A limitation of the model is an inability to capture effects that do not come from points per game alone. Also, this linear regression may not capture nonlinear relationships or interactions among predictors. 
 
 ## Substantive prompts
 
 Paste the exact prompts that shaped the extension. Include the customized extension-selection prompt from the checkpoint and any important implementation follow-ups. Delete unused prompt blocks.
 
-> Replace with an exact prompt.
+> Prompts used to get a response from ChatGPT:
+Prompt 1:
+Ok. Now that we have the proposal submitted and published to git, what I have to do is this: By the checkpoint, submit:
 
-> Replace with another exact prompt, if needed.
+1. A repository URL containing the portfolio folder and any shareable data or reproducible download code.
+2. A working GitHub Pages URL showing the starter site with your title and project question.
+3. In `ai-use.qmd`, a prompt that includes your actual question, variables, baseline result, and the limitation or opportunity you found.
+4. Your selected beyond-course extension and two planned ways to verify it.
+
+Your case-study page may still be a scaffold at this stage. Customize the title, author, research question, and data source, but final results are not required. Follow the publishing walkthrough below. The first publication requires several setup steps; later updates only require rendering, committing, and pushing again.
+
+The standard submission is a live GitHub Pages site. If you have an approved privacy, accessibility, or account constraint, submit the same publication-ready HTML and repository files privately through Canvas.
+
+Part of these instructions include submitting git, but most of them involve the AI extension and the planned extensions of techniques that we have learned in the course
+Prompt 2:
+We have not learned quantile regression and I dont think that we will, let me check the syllabus. For the extension analysis using things we've learned in class I was thinking using cross validation model selection to find the best model for out of sample prediction.
+
+
+> Response from ChatGPT (summarized by the AI)
+ChatGPT suggested using cross-validation and variable selection as the foundation of our analysis, with the primary objective of identifying a multiple linear regression model that minimizes out-of-sample prediction error. It recommended comparing candidate models using criteria such as BIC for variable selection and cross-validated RMSE to evaluate predictive accuracy.
+
+For the beyond-course extension, ChatGPT proposed two methods: elastic net regression and random forest regression. Elastic net combines LASSO and ridge regularization to address multicollinearity and reduce overfitting, which could be useful given the correlations between NBA performance statistics such as points, minutes, and assists. Random forest regression was suggested as an alternative because it uses an ensemble of decision trees to capture nonlinear relationships and interactions among predictors without explicitly specifying those relationships in the model.
+
+ChatGPT recommended random forest regression as the more interesting extension for our project, since it would allow us to compare the predictive performance of a traditional linear regression model against a more flexible, nonlinear approach. Both models could be evaluated using the same out-of-sample prediction metrics to determine whether the additional complexity provides a meaningful improvement in salary prediction.
 
 ## My decisions
 
 - **Accepted:** What useful advice did you use?
+
 - **Changed:** What did you adapt to fit your data or goals?
 - **Rejected or corrected:** What advice was unsuitable, unnecessary, or wrong?
 
@@ -30,10 +57,10 @@ Paste the exact prompts that shaped the extension. Include the customized extens
 
 ## Independent verification
 
-1. **Check and result:** Replace with an official source, diagnostic, simulation, manual calculation, comparison with a known method, or another suitable check.
-2. **Check and result:** Replace with a different check and what you learned.
-
-Link or cite verification sources where appropriate. A second AI response does not count as independent verification.
+1. **Check and result:** https://docs.nvidia.com/heavyai/heavyml-beta/regression-algorithms/random-forest-regression
+This first source is a discussion of random forest regression and how it can be used to create a better prediction by combining the results of a large number of decision trees. The sources states that by training each tree on randomly selected subsets of the data we can reduce overfitting. 
+2. **Check and result:** https://www.datacamp.com/tutorial/random-forest-regression
+This source details how random forest regression can help push through noisy data, or not clearly defined relationships. It explains how each tree being trained on a randomly sampled subset of the original dataset allows each decision tree to learn different patterns, and to not just repeat the same structure. 
 
 ## Remaining limitation
 
